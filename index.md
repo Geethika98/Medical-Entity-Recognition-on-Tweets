@@ -1,23 +1,32 @@
-# Structure Based Hate Speech Detection
+# Medical Entity Recognition
 
-## Hate Speech
-Hate speech is a kind of writing that disparages and is likely to cause harm or danger to the victim. It is a kind of speech that demonstrates a clear intention to be hurtful, to incite harm, or to promote hatred.
-
-<b>Why automated hate speech detection?</b>
+## Introduction & Problem Statement
+Medical Entity Recognition(MER) is an application of a very famous problem in the field of Information Extraction(IE) i.e. Named Entity Recognition(NER). This project aims at parsing named entities and in this project, we have to recognize and classify medical data into the relevant categories, namely drugs, diseases, symptoms, side-effects, treatment, etc. Twitter data will be the input and based on previous medical data from databases and ontologies, relevant medical terms have to be parsed and classified (medical named entities are recognized and classified based on the category they belong to (ex: drug or a disease or cure etc....)
 <br/>
-While manual checking for such comments exists on social media, manual checking can never match to the speed of generation of comments on these sites and hence an automated solution is required.
+As the name suggests, a Medical Name Entity Recognizer identifies medical entities in text. Medical entities, in the context of our project, are fixed, there are 5 categories as mentioned above. Previously, researchers in the field have used hand crafted features to identify medical entities in medical literature. In this project, we have to extend medical entity recognition on tweets. We would use NLP toolkits designed for processing tweets along with other medical ontologies (or databases) to exploit semantic features for this task. We attempt to push the accuracy beyond what has been obtained so far. As tweets are highly disorganised and prone to inconsistencies, our work includes filtering out all these inconsistencies.
+
 
 ## Dataset
-We used a data-set with a corpus of tweets predominantly having offensive language that can be found [here](https://raw.githubusercontent.com/t-davidson/hate-speech-and-offensive-language/master/data/labeled_data.csv?fbclid=IwAR2h6bXVZA4Zh1EVkeGi5fhbnHChqeXxDRL2SCSix8v0SLdD2jhWTAKAz1U). It consists of a total of 24783 tweets. The data-set is skewed as there are relatively lesser number of data points under the hate-speech category.
+We used the following datasets - 
+1) CADEC Dataset : It is a corpus of medical forum posts on patient-reported Adverse Drug Events (ADEs). 
+2) TwiMed Dataset
+3) Micromed Dataset : This dataset was described in MedInfo 2015 paper from IBM Melbourne Research lab. It 
+consists of tweet annotations with medical entities. (three types of entities: Disease (T047 in UMLS), Symptoms (T184), and Pharmacologic Substance (T121) 
 
-Following is the distribution of different classes in the Twitter dataset:
+<br/>
 
-|Type         |Count  |
-|:-----------:|:-----:|
-|Hate Speech  |1430   |
-|Offensive    |19190  |
-|Neither      |4163   |
-|Total        |24783  |
+The above two datasets are already available but these datasets were very small in size, hence not sufficient for training.
+We have increased the size of the dataset that is available for training heuristically.
+
+For this, we were given three resources,
+
+R1 : A list of hashtags, which are relevant to the medical domain
+R2 : A general tweet corpus (about 40-50 GB in size)
+R3 : A list of medical terms and their appropriate categories.
+
+Using the list of hashtags (R1) we obtained a new dataset consisting of a subset of the general tweet corpus (R2) - medical domain related tweets. This new dataset was used both for training as well as testing purpose.
+A part of this new dataset can be annotated using R3 and was used for training purposes. The rest of the dataset was used for testing purposes.
+
 
 
 ## Our Approach
