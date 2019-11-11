@@ -2,16 +2,16 @@
 
 ## Introduction & Problem Statement
 Medical Entity Recognition(MER) is an application of a very famous problem in the field of Information Extraction(IE) i.e. Named Entity Recognition(NER). This project aims at parsing named entities and in this project, we have to recognize and classify medical data into the relevant categories, namely drugs, diseases, symptoms, side-effects, treatment, etc. Twitter data will be the input and based on previous medical data from databases and ontologies, relevant medical terms have to be parsed and classified (medical named entities are recognized and classified based on the category they belong to (ex: drug or a disease or cure etc....)
-<br/>
+<br/> <br/>
 As the name suggests, a Medical Name Entity Recognizer identifies medical entities in text. Medical entities, in the context of our project, are fixed, there are 5 categories as mentioned above. Previously, researchers in the field have used hand crafted features to identify medical entities in medical literature. In this project, we have to extend medical entity recognition on tweets. We would use NLP toolkits designed for processing tweets along with other medical ontologies (or databases) to exploit semantic features for this task. We attempt to push the accuracy beyond what has been obtained so far. As tweets are highly disorganised and prone to inconsistencies, our work includes filtering out all these inconsistencies.
 
 
 ## Dataset
 We used the following datasets - 
 <br/>
-+ CADEC Dataset : It is a corpus of medical forum posts on patient-reported Adverse Drug Events (ADEs). 
-+ TwiMed Dataset
-+ Micromed Dataset : This dataset was described in MedInfo 2015 paper from IBM Melbourne Research lab. It 
++ <b> CADEC dataset </b> : It is a corpus of medical forum posts on patient-reported Adverse Drug Events (ADEs). 
++ <b> TwiMed Dataset </b>
++ <b> Micromed Dataset </b> :  This dataset was described in MedInfo 2015 paper from IBM Melbourne Research lab. It 
 consists of tweet annotations with medical entities. (three types of entities: Disease (T047 in UMLS), Symptoms (T184), and Pharmacologic Substance (T121) 
 
 <br/>
@@ -31,67 +31,51 @@ A part of this new dataset can be annotated using R3 and was used for training p
 
 
 ## Our Approach
-We use more than the traditional Machine Learning and Deep Learning techniques that use bag of words featurizer. We use models that utilize the grammatical structure of a sentence. 
-Models omitting the structural semantics of a sentence give an increasing number of false positives. This can be understood by the following example:
-1. Humans are not Ni\*gers. `Not Hatespeech`
-2. Ni\*gers are not humans. `Hatespeech`
+<b> Model Preparation : </b> MER can be implemented as a sequence classification task, where every chunk is predicted IOB-style as Drug, Disease, Symptom, Treatment and Test. The IOB format (short for inside, outside, beginning) is a common tagging format for tagging tokens.
+
+We have used Keras to implement a bidirectional multi layer rnn cell (LSTM).  We have used a softmax layer as the last layer of the network to produce the final classification outputs. We tried working with different optimizers and we found that AdamOptimzer produced the best results. To calculate the F1 Scores, Prediction Accuracy and Recall we use seqeval library.
+ <br/>
+ To improve upon the previous models we tried combining both LSTM and CRF so as to get the benefits of both. LSTM is used to replace the linear scoring function of CRF so as to get a non-linear and more expressive function. CRF on the other hand helps in detecting complicated named entities which is predominant in medial entities. 
+ <br/>
+ Continuing with the model above we have added a CNN architecture along with the character embeddings and before we combine both the word embeddings and character encodings which is then fed to the main Bi-LSTM. Since medical data is sparse, we have to have a model which can predict the labels even with the small amount of data fed to it. 
   
-Our code can be found [here](https://github.com/yp201/structure-based-hate-speech-detection).
+Our code can be found [here](https://github.com/adisarip/medical_entity_recognition).
 
 ### Dataset Preprocessing 
++ The datasets available to us did not contain all the desired labels, hence we had to preprocess the datasets availble to us. The specific approaches that we have used to preprocess our datasets is explained in detail in the project report, whose link is provided below.
+<br/>
 To use the tweets, we had to clean them:
 - Convert tweet to lower case
 - Remove 'RT' from every tweet (Keyword that identifies whether a tweet is re-tweet) 
 - Remove special characters that don't contribute positively to accuracy (ex hashtags)
-- Remove URLs
+- Remove URLs <br/>
++ Twitter Data Preprocessing : We had to clean up the twitter data and then extract the medical tweets.
 
 
 ### Models and Results
-We implemented SVM and Logistic Regression as baseline models and a simple LSTM and a tree LSTM to capture the structure of sentences. We also implemented a model based on structured self-attention to extract interpretable sentence embedding.
+The following results are on CADEC, TwiMed and Micromed Dataset(combined). One of the issues with all these datasets is that these are annotated by different people so a concept in one dataset could be annotated  differently in another. But we have assumed that are concepts are annotated uniformly across datasets. 
 
-#### Baseline Models
-We trained Gensim Word2Vec model on our twitter corpus and later used the model to obtain word vectors.
-Following are the evaluation metrics :
 
+#### Analysis of results from experiments
+The trained model performs reasonably fine although even after applying the CNN-LSTM-CRF model we still get some misclassified words and in some cases the model predicts logically correct labels even though it does not match with the actual label because of the context of the given sentence and the word being multi-label.  Also some words have been categorised under multiple labels by our model due to the presence of the same  in the given dataset. In some instances the model logically extend the label to include other words as well which is not present in the dataset but is logically correct. These statistics are not captured by the above given evaluation metric. 
+
+#### Challenges we faced
++ As the rules and features for the medical data was different from that of ordinary data, this problem was more challenging when compared to named-entity-recognition problem on normal data.<br/>
++ Twitter data is user-generated social media text, thus, it was highly disorganized and prone to inconsistencies. They contained a lot of noise apart from the required information. Filtering the noise/inconsistencies out from the tweets was a major challenge for our project as these affected the performance drastically.
 <br/>
-<b> SVM </b>
-+ Accuracy : 0.814
-+ Precision : 0.815
-+ Recall : 0.815
-+ F1 Score : 0.815
-
-<b> Logistic Regression </b>
-+ Accuracy : 0.839
-+ Precision : 0.843
-+ Recall : 0.843
-+ F1 Score : 0.843
-
-#### Structured Self-Attentive Sentence Embedding
-We used a model for extracting an interpretable sentence embedding by using self-attention. Instead of using a vector, we use a 2-D matrix to represent the embedding.
-
-Following are the evaluation metrics:
-+ Accuracy : 0.885
-+ Precision : 0.885
-+ Recall : 0.885
-+ F1 Score : 0.885
-
-#### LSTM Models
-Simple LSTM model in principle does capture the structure of the sentence, but does not incorporate the structural dependencies presnet in the sentence explicitely. 
-We also have implemented a Child-Sum Tree-LSTM model on the dependency tree of the sentence, which is better than the Simple LSTM model at preserving semantic information as it incorporates information from multiple child units.
-Following are the evaluation metrics :
-
++ Learning distributed representations for medical tweets. (this can overcome the weaknesses of ‘bag-of-words’ models)
 <br/>
-<b> Simple LSTM Model </b>
-+ Accuracy : 0.874
-+ Precision : 0.861
-+ Recall : 0.861
-+ F1 Score : 0.861
++ We had to identify the relevant content from a given tweet. (For example, all tweets containing the keyword ‘morphine’ might not about the drug ‘morphine’)
+<br/>
 
-<b> Tree LSTM Model </b>
-+ Accuracy : 0.920
-+ Precision : 0.920
-+ Recall : 0.920
-+ F1 Score : 0.920
+#### Practical Applications
++ From the results obtained, we can get the specific details of any disease that has widely spread in a particular area.  <br/>
++ Results could be analysed to find the the patient's feedback/response for a particular drug, the effectiveness of a particular drug (how far it has been successful in treatment and what are the negative points) <br/>
++ Results can be utilised by companies producing medical products for improving their sales. <br/>
 
-## Conclusion
-Tree-LSTM model gave the best results.
+#### Links 
+Our code along with a detailed project report can be found [here](https://github.com/adisarip/medical_entity_recognition). <br/>
+A video describing the procedure and results and the dataset used can be found [here](https://drive.google.com/drive/folders/1XLysnpBP7nejFEpv1GwwqYn1u-3I83zK?usp=sharing). <br/>
+
+
+
