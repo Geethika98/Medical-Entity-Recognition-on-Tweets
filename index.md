@@ -8,9 +8,10 @@ As the name suggests, a Medical Name Entity Recognizer identifies medical entiti
 
 ## Dataset
 We used the following datasets - 
-1) CADEC Dataset : It is a corpus of medical forum posts on patient-reported Adverse Drug Events (ADEs). 
-2) TwiMed Dataset
-3) Micromed Dataset : This dataset was described in MedInfo 2015 paper from IBM Melbourne Research lab. It 
+<br/>
++ CADEC Dataset : It is a corpus of medical forum posts on patient-reported Adverse Drug Events (ADEs). 
++ TwiMed Dataset
++ Micromed Dataset : This dataset was described in MedInfo 2015 paper from IBM Melbourne Research lab. It 
 consists of tweet annotations with medical entities. (three types of entities: Disease (T047 in UMLS), Symptoms (T184), and Pharmacologic Substance (T121) 
 
 <br/>
@@ -18,11 +19,11 @@ consists of tweet annotations with medical entities. (three types of entities: D
 The above two datasets are already available but these datasets were very small in size, hence not sufficient for training.
 We have increased the size of the dataset that is available for training heuristically.
 
-For this, we were given three resources,
+For this, we were given three resources, <br/>
 
-R1 : A list of hashtags, which are relevant to the medical domain
-R2 : A general tweet corpus (about 40-50 GB in size)
-R3 : A list of medical terms and their appropriate categories.
++ R1 : A list of hashtags, which are relevant to the medical domain
++ R2 : A general tweet corpus (about 40-50 GB in size)
++ R3 : A list of medical terms and their appropriate categories. <br/>
 
 Using the list of hashtags (R1) we obtained a new dataset consisting of a subset of the general tweet corpus (R2) - medical domain related tweets. This new dataset was used both for training as well as testing purpose.
 A part of this new dataset can be annotated using R3 and was used for training purposes. The rest of the dataset was used for testing purposes.
